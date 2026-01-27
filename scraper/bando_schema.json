@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bando",
+  "description": "Schema standard per un bando/incentivo estratto.",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Titolo del bando."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Link alla pagina ufficiale o al PDF."
+    },
+    "budget": {
+      "type": "string",
+      "description": "Budget totale o finanziamento massimo per beneficiario."
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Data di scadenza (YYYY-MM-DD)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Breve descrizione o riassunto generato dall'AI."
+    },
+    "beneficiaries": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Lista tipologie beneficiari (es. API, Start-up)."
+    },
+    "source": {
+      "type": "string",
+      "description": "Fonte del bando (es. Ministero Sviluppo Economico)."
+    }
+  },
+  "required": ["title", "url", "source"]
+}

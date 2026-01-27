@@ -1,0 +1,15 @@
+ID: 1
+Title: Mimit: al via le domande per accedere ai 731 milioni per gli Accordi per l’innovazione
+Raw Content (Start): <p><img alt="" src="https://www.mimit.gov.it//images/stories/Banner/incentivi/nuovi-acccordi-169-is.jpg" /></p><p>Urso: “risorse significative per rafforzare la competitività delle nostre imprese e ce
+AI Analysis: {'titolo_riassuntivo': "Accordi per l'innovazione: aiuti economici per le imprese italiane", 'sintesi': 'Il Ministero degli Affari Esterieri finanziato il piano di sostegno aistiti ad aiutare le piccole e medie imprese e le startup a innovare e a crescere. Il bando prevede supporti economici per la ricerca e lo sviluppo di nuove tecnologie.', 'regioni': ['Lombardia', 'Nazionale'], 'scadenza': 'N/A', 'financial_max': None, 'is_gold': True}
+--------------------------------------------------
+ID: 2
+Title: Mimit: trasmesso al Mef decreto per modalità attuazione Nuovo Piano Transizione 5.0
+Raw Content (Start): <p><img alt="" height="450" src="https://www.mimit.gov.it//images/stories/images/mimit-scritta-169-3.jpg" width="800" /></p><p>La misura è finalizzata a sostenere le imprese nella doppia transizione d
+AI Analysis: {'titolo_riassuntivo': 'Nuovo Piano Transizione 5.0: sostenere le imprese digitale e green', 'sintesi': 'Misura per supportare le aziende nella doppia transizione digitale e green con un fondo perduto fino al 50%.', 'regioni': ['Lombardia', 'Nazionale'], 'scadenza': 'N/A', 'financial_max': None, 'is_gold': False}
+--------------------------------------------------
+ID: 3
+Title: Mimit: dati sui tavoli di crisi verificabili sul sito del Dicastero
+Raw Content (Start): <p><img alt="" height="506" src="https://www.mimit.gov.it//images/stories/images/mimit-25-169-2.jpg" width="900" /></p><p>Informazioni pubblicamente consultabili, in modo chiaro e costantemente aggior
+AI Analysis: {'titolo_riassuntivo': 'Bando di sostegno alle regioni', 'sintesi': "Il bando prevede una sostegno economico alle regioni con l'offerta del fondo perduto, che copre fino al 75% delle spese", 'regioni': ['Lombardia', 'Nazionale'], 'scadenza': '2024-03-15', 'financial_max': 100000, 'is_gold': True}
+--------------------------------------------------

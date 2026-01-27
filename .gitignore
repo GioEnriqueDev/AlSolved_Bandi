@@ -1,0 +1,64 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv
+venv/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.next/
+out/
+
+# Database
+*.db
+*.sqlite3
+
+# Logs and Reports
+*.log
+analysis_run*.log
+debug_log*.txt
+error_*.txt
+last_error.txt
+api_verification.txt
+api_debug.txt
+api_results.txt
+report.txt
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project Specific
+debug_gov_scrape*.png
+opendata-export.json

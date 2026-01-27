@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: alsolved_db
+    environment:
+      POSTGRES_USER: alsolved_user
+      POSTGRES_PASSWORD: alsolved_password
+      POSTGRES_DB: alsolved_bandi
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - alsolved_net
+
+  scraper:
+    build: 
+      context: .
+      dockerfile: scraper/Dockerfile
+    container_name: alsolved_scraper
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://alsolved_user:alsolved_password@db:5432/alsolved_bandi
+    volumes:
+      - ./scraper:/app/scraper
+      - ./analysis:/app/analysis
+    command: tail -f /dev/null # Keep alive for dev, we will run scripts manually or via scheduler
+    networks:
+      - alsolved_net
+
+volumes:
+  postgres_data:
+
+networks:
+  alsolved_net:
