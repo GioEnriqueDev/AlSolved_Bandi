@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from scraper.models import get_engine, get_session, Bando, ProcessingStatus
-from api.schemas import BandoResponse
+from src.scraper.models import get_engine, get_session, Bando, ProcessingStatus
+from src.api.schemas import BandoResponse
 
 app = FastAPI(
     title="AlSolved API",

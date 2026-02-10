@@ -47,7 +47,7 @@ class Bando(Base):
 
 # Database Connection
 # Use SQLite for local testing if no env var is set
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./bandi.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///data/db/bandi.db")
 
 def get_engine():
     return create_engine(DATABASE_URL)

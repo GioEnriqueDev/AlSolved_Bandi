@@ -22,7 +22,7 @@ import json
 import logging
 import re
 from bs4 import BeautifulSoup
-from scraper.models import Bando, ProcessingStatus, init_db
+from src.scraper.models import Bando, ProcessingStatus, init_db
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

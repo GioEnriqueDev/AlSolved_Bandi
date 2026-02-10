@@ -17,7 +17,7 @@ import json
 import re
 import logging
 from pathlib import Path
-from scraper.models import Bando, init_db
+from src.scraper.models import Bando, init_db
 
 # Setup Logging
 logging.basicConfig(
@@ -27,7 +27,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Path to Open Data JSON (existing file in project root)
-OPENDATA_PATH = Path(__file__).parent.parent / "opendata-export.json"
+OPENDATA_PATH = Path(__file__).parent.parent.parent / "data" / "input" / "opendata-export.json"
 
 
 def normalize_url(url: str) -> str:

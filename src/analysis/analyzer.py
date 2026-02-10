@@ -13,7 +13,7 @@ import sys
 import warnings
 import time
 from typing import Dict, Any
-from scraper.models import init_db, Bando, ProcessingStatus
+from src.scraper.models import init_db, Bando, ProcessingStatus
 import google.generativeai as genai
 from dotenv import load_dotenv
 
