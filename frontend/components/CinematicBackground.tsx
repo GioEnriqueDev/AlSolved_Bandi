@@ -166,31 +166,37 @@ export default function CinematicBackground() {
 
     return (
         <>
-            {/* Background Layer with Parallax */}
+            {/* Background Layer with Parallax - Ultra Clean Premium Finish */}
             <div
                 className="fixed inset-0 -z-40 overflow-hidden bg-[#F8FAFC]"
-                style={{ transform: `translate(${parallaxX}px, ${parallaxY}px) scale(1.05)` }}
+                style={{ transform: `translate(${parallaxX}px, ${parallaxY}px) scale(1.1)` }}
             >
                 {/* 
-                   Using a CSS gradient as a high-quality fallback for the cinematic image.
-                   It creates a professional, clean tech look.
+                   Cinematic Fallback: Layered Gradients to simulate depth and professional lighting.
                 */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#F8FAFC] via-white to-[#F1F5F9]" />
 
-                {/* Abstract light beam */}
-                <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-magenta/5 blur-[120px] rounded-full animate-pulse-slow" />
+                {/* Simulated Ambient Light from top-left */}
+                <div className="absolute -top-[20%] -left-[10%] w-[100vw] h-[100vh] bg-gradient-radial from-primary/5 via-transparent to-transparent opacity-60 blur-[150px]" />
+
+                {/* Subtle depth layer */}
+                <div className="absolute bottom-[-10%] right-[-10%] w-[80vw] h-[80vh] bg-gradient-radial from-blue-400/5 via-transparent to-transparent opacity-40 blur-[120px]" />
+
+                {/* Vertical Light Glimmer */}
+                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] opacity-20" />
             </div>
 
-            {/* Sony Waves Canvas */}
+            {/* Sony Waves Canvas - Now with glossy silk highlights */}
             <canvas
                 ref={canvasRef}
-                className="fixed inset-0 -z-20 pointer-events-none opacity-80"
+                className="fixed inset-0 -z-20 pointer-events-none opacity-[0.85]"
             />
 
-            {/* Vignette & Grain */}
+            {/* Premium Finish: Subtle Lens Dirt/Grain & Vignette */}
             <div className="fixed inset-0 -z-10 pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-slate-200/30" />
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-multiply" />
+                <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-slate-200/40" />
+                {/* Almost invisible grain for high-end feel */}
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] mix-blend-overlay" />
             </div>
         </>
     );
