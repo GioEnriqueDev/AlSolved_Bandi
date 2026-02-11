@@ -37,13 +37,14 @@ export default function CinematicBackground() {
             frequency: number,
             speed: number,
             color: string,
-            thickness: number
+            thickness: number,
+            showGloss: boolean = false
         ) => {
+            // Main Soft Wave
             ctx.beginPath();
             ctx.moveTo(0, canvas.height / 2);
 
-            for (let x = 0; x < canvas.width; x += 2) {
-                // Multi-layered sine wave for organic feel
+            for (let x = 0; x < canvas.width; x += 3) {
                 const y =
                     canvas.height / 2 +
                     yOffset +
@@ -57,44 +58,93 @@ export default function CinematicBackground() {
             ctx.lineWidth = thickness;
             ctx.lineCap = "round";
             ctx.stroke();
+
+            // Glossary Peak (The PlayStation "Silk" Look)
+            if (showGloss) {
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height / 2);
+
+                for (let x = 0; x < canvas.width; x += 3) {
+                    const y =
+                        canvas.height / 2 +
+                        yOffset +
+                        Math.sin(x * frequency + time * speed) * amplitude +
+                        Math.sin(x * frequency * 0.5 + time * speed * 0.3) * (amplitude * 0.5);
+
+                    ctx.lineTo(x, y);
+                }
+
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.25)"; // Pure white peak
+                ctx.lineWidth = 2; // Thin glossy line
+                ctx.stroke();
+            }
         };
 
         const animate = () => {
-            time += 0.005; // Very slow and cinematic
+            time += 0.003; // Even slower for elegance
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Add subtle blur to the waves
-            ctx.filter = "blur(40px)";
+            // Background Light Beams (Very Subtle)
+            ctx.save();
+            ctx.globalCompositeOperation = "screen";
+            ctx.filter = "blur(80px)";
 
-            // Draw multiple overlapping Sony-style waves
-            // Wave 1: Main Magenta
+            // Magenta Bloom 1
+            ctx.beginPath();
+            ctx.arc(canvas.width * 0.2 + Math.sin(time) * 100, canvas.height * 0.5, 300, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(255, 46, 99, 0.03)";
+            ctx.fill();
+
+            // Blue Bloom 1
+            ctx.beginPath();
+            ctx.arc(canvas.width * 0.8 + Math.cos(time) * 100, canvas.height * 0.4, 400, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(100, 150, 255, 0.02)";
+            ctx.fill();
+            ctx.restore();
+
+            // Draw Sony-style waves with layered gloss
+            ctx.filter = "blur(35px)"; // Silk-like softness
+
+            // Base Layer: Deep Pink
             drawWave(
-                Math.sin(time * 0.2) * 50,
+                Math.sin(time * 0.15) * 60,
+                140,
+                0.0007,
+                0.8,
+                "rgba(255, 46, 99, 0.12)",
+                180
+            );
+
+            // Middle Layer: Vivid Magenta + Gloss
+            drawWave(
+                Math.cos(time * 0.2) * 40 + 20,
                 100,
-                0.001,
-                1,
-                "rgba(255, 46, 99, 0.15)", // Brighter Magenta
-                120
+                0.0012,
+                1.4,
+                "rgba(255, 46, 99, 0.18)", // More vibrant
+                100,
+                true // Show glossy peak
             );
 
-            // Wave 2: Subtle Blue/Dark contrast
+            // Top Layer: Pure Pink + Gloss (Fast but small)
             drawWave(
-                Math.cos(time * 0.3) * 30 + 50,
-                80,
-                0.0015,
-                -0.8,
-                "rgba(100, 150, 255, 0.08)",
-                100
-            );
-
-            // Wave 3: Deep Magenta
-            drawWave(
-                Math.sin(time * 0.1) * 40 - 50,
-                120,
-                0.0008,
-                1.2,
+                Math.sin(time * 0.25) * 30 - 30,
+                60,
+                0.002,
+                -1.2,
                 "rgba(255, 46, 99, 0.1)",
-                150
+                60,
+                true
+            );
+
+            // Contrast Layer: Cool Blue
+            drawWave(
+                Math.cos(time * 0.1) * 50 - 60,
+                180,
+                0.0005,
+                0.5,
+                "rgba(100, 150, 255, 0.05)",
+                200
             );
 
             ctx.filter = "none";
