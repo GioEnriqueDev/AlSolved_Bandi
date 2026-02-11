@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import NeonLogo from "@/components/ui/NeonLogo";
-import Hyperspeed from "@/components/Hyperspeed";
+import CinematicBackground from "@/components/CinematicBackground";
 import Navbar from "@/components/Navbar";
 import { ArrowRight } from "lucide-react";
 
@@ -12,11 +12,11 @@ export default function LandingPage() {
             <Navbar />
             <main className="min-h-screen text-foreground overflow-x-hidden selection:bg-primary/20 selection:text-black">
 
-                {/* --- HERO SECTION (Hyperspeed - Light) --- */}
+                {/* --- HERO SECTION (Cinematic - Light) --- */}
                 <section className="relative h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
 
-                    {/* Hyperspeed Background Component (Customized for Light Theme) */}
-                    <Hyperspeed />
+                    {/* Cinematic Background Component (To be refined with Sony Waves) */}
+                    <CinematicBackground />
 
                     <div className="relative z-10 flex flex-col items-center gap-8">
                         <NeonLogo size="lg" className="scale-150 mb-4" />
