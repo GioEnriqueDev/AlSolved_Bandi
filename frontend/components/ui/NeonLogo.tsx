@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface NeonLogoProps {
@@ -13,7 +13,6 @@ export default function NeonLogo({
     size = "md",
 }: NeonLogoProps) {
     const [isVisible, setIsVisible] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
 
     const sizes = {
         sm: { icon: 32, text: "text-xl", gap: "gap-2" },
@@ -22,14 +21,13 @@ export default function NeonLogo({
     };
 
     useEffect(() => {
-        // Trigger entrance animation after mount
-        const timer = setTimeout(() => setIsVisible(true), 100);
+        // Near-instant entrance — 20ms delay just for hydration safety
+        const timer = setTimeout(() => setIsVisible(true), 20);
         return () => clearTimeout(timer);
     }, []);
 
     return (
         <div
-            ref={containerRef}
             className={cn(
                 "flex items-center relative group",
                 sizes[size].gap,
@@ -37,7 +35,7 @@ export default function NeonLogo({
             )}
         >
             {/* Hover Glow Aura */}
-            <div className="absolute -inset-4 rounded-2xl bg-[#FF2E63]/0 group-hover:bg-[#FF2E63]/8 blur-2xl transition-all duration-700 pointer-events-none" />
+            <div className="absolute -inset-4 rounded-2xl bg-[#FF2E63]/0 group-hover:bg-[#FF2E63]/8 blur-2xl transition-all duration-500 pointer-events-none" />
 
             {/* SVG Icon */}
             <svg
@@ -47,13 +45,12 @@ export default function NeonLogo({
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 className={cn(
-                    "relative z-10 transition-transform duration-500 ease-out",
+                    "relative z-10 transition-all duration-300 ease-out",
                     "group-hover:scale-105",
-                    isVisible ? "opacity-100" : "opacity-0"
+                    isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"
                 )}
                 style={{
                     filter: "drop-shadow(0 0 6px rgba(255, 46, 99, 0.3))",
-                    transitionDelay: "200ms",
                 }}
             >
                 <defs>
@@ -79,11 +76,10 @@ export default function NeonLogo({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     filter="url(#neon-glow)"
-                    className="neon-logo-bubble"
                     style={{
                         strokeDasharray: 200,
                         strokeDashoffset: isVisible ? 0 : 200,
-                        transition: "stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                        transition: "stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
                     }}
                 />
 
@@ -95,11 +91,10 @@ export default function NeonLogo({
                     fill="rgba(107, 114, 128, 0.06)"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="neon-logo-bubble-back"
                     style={{
                         strokeDasharray: 200,
                         strokeDashoffset: isVisible ? 0 : 200,
-                        transition: "stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.15s",
+                        transition: "stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.05s",
                     }}
                 />
             </svg>
@@ -108,7 +103,7 @@ export default function NeonLogo({
             <div className="relative z-10">
                 <span
                     className={cn(
-                        "font-black tracking-[0.15em] uppercase transition-all duration-700",
+                        "font-black tracking-[0.15em] uppercase transition-all duration-300",
                         sizes[size].text,
                         isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
                     )}
@@ -117,7 +112,7 @@ export default function NeonLogo({
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
-                        transitionDelay: "400ms",
+                        transitionDelay: "100ms",
                     }}
                 >
                     ALSOLVED
@@ -126,14 +121,14 @@ export default function NeonLogo({
                 {/* Subtle magenta glow behind text */}
                 <span
                     className={cn(
-                        "font-black tracking-[0.15em] uppercase absolute inset-0 pointer-events-none transition-opacity duration-1000",
+                        "font-black tracking-[0.15em] uppercase absolute inset-0 pointer-events-none transition-opacity duration-400",
                         sizes[size].text,
                         isVisible ? "opacity-40" : "opacity-0"
                     )}
                     style={{
                         color: "#FF2E63",
                         filter: "blur(10px)",
-                        transitionDelay: "600ms",
+                        transitionDelay: "150ms",
                     }}
                     aria-hidden
                 >
