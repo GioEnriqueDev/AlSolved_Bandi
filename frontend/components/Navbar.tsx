@@ -56,7 +56,7 @@ export default function Navbar() {
 
                 {/* Mobile Toggle */}
                 <button
-                    className="md:hidden text-white"
+                    className="md:hidden text-gray-900"
                     onClick={() => setMobileOpen(!mobileOpen)}
                 >
                     {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

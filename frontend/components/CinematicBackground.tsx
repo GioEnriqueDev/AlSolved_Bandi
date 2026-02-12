@@ -1,154 +1,257 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+
+// ─── PlayStation-Style Magenta Silk Waves ───
+// Multi-layered, glossy canvas animation with ambient bloom
+
+interface WaveLayer {
+    yOffset: number;
+    amplitude: number;
+    frequency: number;
+    speed: number;
+    color: string;
+    fillColor: string;
+    thickness: number;
+    glossy: boolean;
+    phase: number;
+}
+
+const WAVE_LAYERS: WaveLayer[] = [
+    // Layer 0: Deep base — widest, slowest
+    {
+        yOffset: 80, amplitude: 200, frequency: 0.0004, speed: 0.3,
+        color: "rgba(173, 20, 87, 0.08)", fillColor: "rgba(173, 20, 87, 0.03)",
+        thickness: 240, glossy: false, phase: 0,
+    },
+    // Layer 1: Mid magenta — main visible wave
+    {
+        yOffset: 40, amplitude: 150, frequency: 0.0007, speed: 0.5,
+        color: "rgba(233, 30, 99, 0.12)", fillColor: "rgba(233, 30, 99, 0.04)",
+        thickness: 160, glossy: true, phase: 1.2,
+    },
+    // Layer 2: Vivid pink — accent wave
+    {
+        yOffset: 0, amplitude: 100, frequency: 0.0012, speed: 0.8,
+        color: "rgba(255, 46, 99, 0.18)", fillColor: "rgba(255, 46, 99, 0.06)",
+        thickness: 100, glossy: true, phase: 2.4,
+    },
+    // Layer 3: Hot pink highlight — fast, thin
+    {
+        yOffset: -30, amplitude: 60, frequency: 0.002, speed: -0.6,
+        color: "rgba(255, 46, 99, 0.14)", fillColor: "rgba(255, 46, 99, 0.03)",
+        thickness: 50, glossy: true, phase: 3.8,
+    },
+    // Layer 4: Cool blue contrast — very subtle
+    {
+        yOffset: -60, amplitude: 180, frequency: 0.0003, speed: 0.2,
+        color: "rgba(100, 130, 255, 0.04)", fillColor: "rgba(100, 130, 255, 0.015)",
+        thickness: 220, glossy: false, phase: 5.0,
+    },
+    // Layer 5: Shimmer pink — ultra thin, fast
+    {
+        yOffset: 10, amplitude: 40, frequency: 0.003, speed: 1.2,
+        color: "rgba(255, 80, 130, 0.1)", fillColor: "rgba(255, 80, 130, 0.02)",
+        thickness: 30, glossy: true, phase: 0.7,
+    },
+];
 
 export default function CinematicBackground() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+    const mouseRef = useRef({ x: 0.5, y: 0.5 });
+    const rafRef = useRef<number>(0);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
-            setMousePos({
+            mouseRef.current = {
                 x: e.clientX / window.innerWidth,
                 y: e.clientY / window.innerHeight,
-            });
+            };
         };
-        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mousemove", handleMouseMove, { passive: true });
         return () => window.removeEventListener("mousemove", handleMouseMove);
     }, []);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { alpha: false });
         if (!ctx) return;
 
-        let animationId: number;
         let time = 0;
+        let w = 0;
+        let h = 0;
 
         const resize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const dpr = Math.min(window.devicePixelRatio, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = `${w}px`;
+            canvas.style.height = `${h}px`;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         };
 
-        const drawWave = (
-            yOffset: number,
-            amplitude: number,
-            frequency: number,
-            speed: number,
-            color: string,
-            thickness: number,
-            showGloss: boolean = false
-        ) => {
-            // Main Soft Wave
+        const drawWave = (layer: WaveLayer, t: number) => {
+            const centerY = h * 0.55;
+            const step = 4;
+
+            // Compute wave path
             ctx.beginPath();
-            ctx.moveTo(0, canvas.height / 2);
+            ctx.moveTo(-10, centerY + layer.yOffset + layer.amplitude);
 
-            for (let x = 0; x < canvas.width; x += 3) {
-                const y =
-                    canvas.height / 2 +
-                    yOffset +
-                    Math.sin(x * frequency + time * speed) * amplitude +
-                    Math.sin(x * frequency * 0.5 + time * speed * 0.3) * (amplitude * 0.5);
-
+            for (let x = -10; x <= w + 10; x += step) {
+                const y = centerY + layer.yOffset
+                    + Math.sin(x * layer.frequency + t * layer.speed + layer.phase) * layer.amplitude
+                    + Math.sin(x * layer.frequency * 0.5 + t * layer.speed * 0.7 + layer.phase * 0.3) * (layer.amplitude * 0.4)
+                    + Math.sin(x * layer.frequency * 2.3 + t * layer.speed * 0.3) * (layer.amplitude * 0.15);
                 ctx.lineTo(x, y);
             }
 
-            ctx.strokeStyle = color;
-            ctx.lineWidth = thickness;
+            // Fill to bottom
+            ctx.lineTo(w + 10, h + 10);
+            ctx.lineTo(-10, h + 10);
+            ctx.closePath();
+            ctx.fillStyle = layer.fillColor;
+            ctx.fill();
+
+            // Stroke the wave line
+            ctx.beginPath();
+            ctx.moveTo(-10, centerY);
+            for (let x = -10; x <= w + 10; x += step) {
+                const y = centerY + layer.yOffset
+                    + Math.sin(x * layer.frequency + t * layer.speed + layer.phase) * layer.amplitude
+                    + Math.sin(x * layer.frequency * 0.5 + t * layer.speed * 0.7 + layer.phase * 0.3) * (layer.amplitude * 0.4)
+                    + Math.sin(x * layer.frequency * 2.3 + t * layer.speed * 0.3) * (layer.amplitude * 0.15);
+                ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = layer.color;
+            ctx.lineWidth = layer.thickness;
             ctx.lineCap = "round";
             ctx.stroke();
 
-            // Glossary Peak (The PlayStation "Silk" Look)
-            if (showGloss) {
+            // Glossy highlight — thin white line on crests
+            if (layer.glossy) {
                 ctx.beginPath();
-                ctx.moveTo(0, canvas.height / 2);
-
-                for (let x = 0; x < canvas.width; x += 3) {
-                    const y =
-                        canvas.height / 2 +
-                        yOffset +
-                        Math.sin(x * frequency + time * speed) * amplitude +
-                        Math.sin(x * frequency * 0.5 + time * speed * 0.3) * (amplitude * 0.5);
-
-                    ctx.lineTo(x, y);
+                for (let x = -10; x <= w + 10; x += step) {
+                    const y = centerY + layer.yOffset
+                        + Math.sin(x * layer.frequency + t * layer.speed + layer.phase) * layer.amplitude
+                        + Math.sin(x * layer.frequency * 0.5 + t * layer.speed * 0.7 + layer.phase * 0.3) * (layer.amplitude * 0.4)
+                        + Math.sin(x * layer.frequency * 2.3 + t * layer.speed * 0.3) * (layer.amplitude * 0.15);
+                    if (x === -10) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
                 }
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
 
-                ctx.strokeStyle = "rgba(255, 255, 255, 0.25)"; // Pure white peak
-                ctx.lineWidth = 2; // Thin glossy line
+                // Secondary gloss — offset
+                ctx.beginPath();
+                for (let x = -10; x <= w + 10; x += step) {
+                    const y = centerY + layer.yOffset - 2
+                        + Math.sin(x * layer.frequency + t * layer.speed + layer.phase) * layer.amplitude
+                        + Math.sin(x * layer.frequency * 0.5 + t * layer.speed * 0.7 + layer.phase * 0.3) * (layer.amplitude * 0.4)
+                        + Math.sin(x * layer.frequency * 2.3 + t * layer.speed * 0.3) * (layer.amplitude * 0.15);
+                    if (x === -10) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+                ctx.lineWidth = 3;
                 ctx.stroke();
             }
         };
 
+        const drawAmbientBloom = (t: number) => {
+            // Magenta bloom — left
+            const grad1 = ctx.createRadialGradient(
+                w * 0.15 + Math.sin(t * 0.2) * 80, h * 0.45, 0,
+                w * 0.15 + Math.sin(t * 0.2) * 80, h * 0.45, w * 0.4
+            );
+            grad1.addColorStop(0, "rgba(255, 46, 99, 0.06)");
+            grad1.addColorStop(0.5, "rgba(233, 30, 99, 0.02)");
+            grad1.addColorStop(1, "rgba(255, 46, 99, 0)");
+            ctx.fillStyle = grad1;
+            ctx.fillRect(0, 0, w, h);
+
+            // Purple bloom — right
+            const grad2 = ctx.createRadialGradient(
+                w * 0.85 + Math.cos(t * 0.15) * 60, h * 0.35, 0,
+                w * 0.85 + Math.cos(t * 0.15) * 60, h * 0.35, w * 0.35
+            );
+            grad2.addColorStop(0, "rgba(180, 50, 220, 0.04)");
+            grad2.addColorStop(0.6, "rgba(140, 30, 180, 0.01)");
+            grad2.addColorStop(1, "rgba(180, 50, 220, 0)");
+            ctx.fillStyle = grad2;
+            ctx.fillRect(0, 0, w, h);
+
+            // Warm center glow
+            const grad3 = ctx.createRadialGradient(
+                w * 0.5, h * 0.5, 0,
+                w * 0.5, h * 0.5, w * 0.5
+            );
+            grad3.addColorStop(0, "rgba(255, 200, 220, 0.03)");
+            grad3.addColorStop(1, "rgba(255, 200, 220, 0)");
+            ctx.fillStyle = grad3;
+            ctx.fillRect(0, 0, w, h);
+        };
+
         const animate = () => {
-            time += 0.003; // Even slower for elegance
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            time += 0.004;
 
-            // Background Light Beams (Very Subtle)
+            // Clear with light background
+            ctx.fillStyle = "#F8FAFC";
+            ctx.fillRect(0, 0, w, h);
+
+            // Ambient bloom (behind waves)
+            drawAmbientBloom(time);
+
+            // Apply global blur for silk effect
             ctx.save();
-            ctx.globalCompositeOperation = "screen";
-            ctx.filter = "blur(80px)";
+            ctx.filter = "blur(30px)";
 
-            // Magenta Bloom 1
-            ctx.beginPath();
-            ctx.arc(canvas.width * 0.2 + Math.sin(time) * 100, canvas.height * 0.5, 300, 0, Math.PI * 2);
-            ctx.fillStyle = "rgba(255, 46, 99, 0.03)";
-            ctx.fill();
+            // Draw waves back to front
+            for (let i = 0; i < WAVE_LAYERS.length; i++) {
+                drawWave(WAVE_LAYERS[i], time);
+            }
 
-            // Blue Bloom 1
-            ctx.beginPath();
-            ctx.arc(canvas.width * 0.8 + Math.cos(time) * 100, canvas.height * 0.4, 400, 0, Math.PI * 2);
-            ctx.fillStyle = "rgba(100, 150, 255, 0.02)";
-            ctx.fill();
             ctx.restore();
 
-            // Draw Sony-style waves with layered gloss
-            ctx.filter = "blur(35px)"; // Silk-like softness
+            // Draw the top two waves again without blur for crisp glossy highlights
+            ctx.save();
+            ctx.filter = "blur(1px)";
+            for (let i = 2; i < 4; i++) {
+                // Only draw the glossy highlight part
+                const layer = WAVE_LAYERS[i];
+                const centerY = h * 0.55;
+                const step = 4;
 
-            // Base Layer: Deep Pink
-            drawWave(
-                Math.sin(time * 0.15) * 60,
-                140,
-                0.0007,
-                0.8,
-                "rgba(255, 46, 99, 0.12)",
-                180
+                ctx.beginPath();
+                for (let x = -10; x <= w + 10; x += step) {
+                    const y = centerY + layer.yOffset
+                        + Math.sin(x * layer.frequency + time * layer.speed + layer.phase) * layer.amplitude
+                        + Math.sin(x * layer.frequency * 0.5 + time * layer.speed * 0.7 + layer.phase * 0.3) * (layer.amplitude * 0.4)
+                        + Math.sin(x * layer.frequency * 2.3 + time * layer.speed * 0.3) * (layer.amplitude * 0.15);
+                    if (x === -10) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // Vignette overlay
+            const vignette = ctx.createRadialGradient(
+                w * 0.5, h * 0.5, w * 0.2,
+                w * 0.5, h * 0.5, w * 0.8
             );
+            vignette.addColorStop(0, "rgba(248, 250, 252, 0)");
+            vignette.addColorStop(1, "rgba(226, 232, 240, 0.3)");
+            ctx.fillStyle = vignette;
+            ctx.fillRect(0, 0, w, h);
 
-            // Middle Layer: Vivid Magenta + Gloss
-            drawWave(
-                Math.cos(time * 0.2) * 40 + 20,
-                100,
-                0.0012,
-                1.4,
-                "rgba(255, 46, 99, 0.18)", // More vibrant
-                100,
-                true // Show glossy peak
-            );
-
-            // Top Layer: Pure Pink + Gloss (Fast but small)
-            drawWave(
-                Math.sin(time * 0.25) * 30 - 30,
-                60,
-                0.002,
-                -1.2,
-                "rgba(255, 46, 99, 0.1)",
-                60,
-                true
-            );
-
-            // Contrast Layer: Cool Blue
-            drawWave(
-                Math.cos(time * 0.1) * 50 - 60,
-                180,
-                0.0005,
-                0.5,
-                "rgba(100, 150, 255, 0.05)",
-                200
-            );
-
-            ctx.filter = "none";
-            animationId = requestAnimationFrame(animate);
+            rafRef.current = requestAnimationFrame(animate);
         };
 
         resize();
@@ -157,47 +260,26 @@ export default function CinematicBackground() {
 
         return () => {
             window.removeEventListener("resize", resize);
-            cancelAnimationFrame(animationId);
+            cancelAnimationFrame(rafRef.current);
         };
     }, []);
 
-    const parallaxX = (mousePos.x - 0.5) * 20;
-    const parallaxY = (mousePos.y - 0.5) * 20;
+    const mx = mouseRef.current;
+    const parallaxX = (mx.x - 0.5) * 15;
+    const parallaxY = (mx.y - 0.5) * 15;
 
     return (
-        <>
-            {/* Background Layer with Parallax - Ultra Clean Premium Finish */}
-            <div
-                className="fixed inset-0 -z-40 overflow-hidden bg-[#F8FAFC]"
-                style={{ transform: `translate(${parallaxX}px, ${parallaxY}px) scale(1.1)` }}
-            >
-                {/* 
-                   Cinematic Fallback: Layered Gradients to simulate depth and professional lighting.
-                */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#F8FAFC] via-white to-[#F1F5F9]" />
-
-                {/* Simulated Ambient Light from top-left */}
-                <div className="absolute -top-[20%] -left-[10%] w-[100vw] h-[100vh] bg-gradient-radial from-primary/5 via-transparent to-transparent opacity-60 blur-[150px]" />
-
-                {/* Subtle depth layer */}
-                <div className="absolute bottom-[-10%] right-[-10%] w-[80vw] h-[80vh] bg-gradient-radial from-blue-400/5 via-transparent to-transparent opacity-40 blur-[120px]" />
-
-                {/* Vertical Light Glimmer */}
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] opacity-20" />
-            </div>
-
-            {/* Sony Waves Canvas - Now with glossy silk highlights */}
+        <div
+            className="fixed inset-0 -z-10 overflow-hidden"
+            style={{
+                transform: `translate(${parallaxX}px, ${parallaxY}px) scale(1.05)`,
+                willChange: "transform",
+            }}
+        >
             <canvas
                 ref={canvasRef}
-                className="fixed inset-0 -z-20 pointer-events-none opacity-[0.85]"
+                className="absolute inset-0 w-full h-full"
             />
-
-            {/* Premium Finish: Subtle Lens Dirt/Grain & Vignette */}
-            <div className="fixed inset-0 -z-10 pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-slate-200/40" />
-                {/* Almost invisible grain for high-end feel */}
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] mix-blend-overlay" />
-            </div>
-        </>
+        </div>
     );
 }

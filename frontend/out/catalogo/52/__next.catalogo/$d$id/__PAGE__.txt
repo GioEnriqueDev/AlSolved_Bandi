@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
 3:I[97367,["/AlSolved_Bandi/_next/static/chunks/ff1a16fafef87110.js","/AlSolved_Bandi/_next/static/chunks/7340adf74ff47ec0.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"buildId":"UyR5GopVxbbQ6yCnlFwHm","rsc":["$","$1","c",{"children":["$L2",[["$","script","script-0",{"src":"/AlSolved_Bandi/_next/static/chunks/c5c63e918df85cc2.js","async":true}],["$","script","script-1",{"src":"/AlSolved_Bandi/_next/static/chunks/8338a3a504e11d5c.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"6D_2rZ1tikiYbvW3dbGQn","rsc":["$","$1","c",{"children":["$L2",[["$","script","script-0",{"src":"/AlSolved_Bandi/_next/static/chunks/a7c198f8b085b01d.js","async":true}],["$","script","script-1",{"src":"/AlSolved_Bandi/_next/static/chunks/8095ae184c9a76e2.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
 5:null
 2:E{"digest":"NEXT_HTTP_ERROR_FALLBACK;404"}

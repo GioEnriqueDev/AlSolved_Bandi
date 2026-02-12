@@ -8,30 +8,7 @@ import FilterBar from "@/components/FilterBar";
 
 import CinematicBackground from "@/components/CinematicBackground";
 import Navbar from "@/components/Navbar";
-
-interface Bando {
-  id: number;
-  title: string;
-  source_name: string;
-  status: string;
-  url: string;
-  ingested_at: string;
-  marketing_text?: string | null;
-  ai_analysis?: {
-    titolo_riassuntivo?: string;
-    sintesi?: string;
-    scadenza?: string;
-    close_date?: string;
-    data_chiusura?: string;
-    regions?: string[];
-    regione?: string;
-    financial_max?: number;
-    financial_min?: number;
-    ateco_codes?: string;
-    is_gold?: boolean;
-    is_expired?: boolean | string;
-  } | null;
-}
+import type { Bando } from "@/lib/types";
 
 export default function Home() {
   const [bandi, setBandi] = useState<Bando[]>([]);
@@ -75,9 +52,16 @@ export default function Home() {
         });
       }
 
-      if (status) {
-        // Simple status filter (mock)
-        // In real app, check is_expired or dates
+      if (status === "attivi") {
+        data = data.filter((b: Bando) => {
+          const expired = b.ai_analysis?.is_expired;
+          return expired !== true && expired !== "true";
+        });
+      } else if (status === "scaduti") {
+        data = data.filter((b: Bando) => {
+          const expired = b.ai_analysis?.is_expired;
+          return expired === true || expired === "true";
+        });
       }
 
       // Pagination

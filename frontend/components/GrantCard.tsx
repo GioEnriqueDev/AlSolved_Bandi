@@ -5,30 +5,7 @@ import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-
-interface Bando {
-    id: number;
-    title: string;
-    source_name: string;
-    status: string;
-    url: string;
-    ingested_at: string;
-    marketing_text?: string | null;
-    ai_analysis?: {
-        titolo_riassuntivo?: string;
-        sintesi?: string;
-        scadenza?: string;
-        close_date?: string;
-        data_chiusura?: string;
-        regions?: string[];
-        regione?: string;
-        financial_max?: number;
-        financial_min?: number;
-        ateco_codes?: string;
-        is_gold?: boolean;
-        is_expired?: boolean | string;
-    } | null;
-}
+import type { Bando } from "@/lib/types";
 
 // Mapping Solr IDs to region names (same as backend)
 const SOLR_ID_TO_REGION: Record<string, string> = {
